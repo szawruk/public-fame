@@ -1,0 +1,8 @@
+{
+  "name": "PublicFame",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue",
+  "id": "52a1ce56"
+}
