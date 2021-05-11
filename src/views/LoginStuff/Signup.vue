@@ -18,7 +18,7 @@
 
 <script>
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
-import Signup from '@/components/Signup.vue';
+import Signup from '@/components/InitialPage.vue';
 
 export default  {
   name: 'Tab1',
