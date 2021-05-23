@@ -2,21 +2,29 @@ import { createRouter, createWebHistory } from '@ionic/vue-router';
 import Login from "@/components/Login";
 import InitialPage from "@/components/InitialPage";
 import Dashboard from "@/components/Dashboard";
+import Signup from "@/components/Signup";
 
 const routes = [
   {
-    path: '/',
-    component: InitialPage
+    path: '/login/',
+    component: Login,
+    name: 'login'
   },
   {
-    path: '/login/',
-    component: Login
-  }
-,
+    path: '/dashboard',
+    component: Dashboard,
+    name: 'dashboard'
+  },
   {
-    path: '/dashboard/',
-    component: Dashboard
-  }
+    path: '/signup/',
+    component: Signup,
+    name: 'signup'
+  },
+  {
+    path: '/',
+    component: InitialPage,
+    name: 'init'
+  },
 
 
 

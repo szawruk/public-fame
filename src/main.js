@@ -1,8 +1,10 @@
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import App from './App.vue'
 import router from './router';
+import {auth} from './firebase'
+import Vuex from 'vuex'
 
-import { IonicVue } from '@ionic/vue';
+import {IonicVue} from '@ionic/vue';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/vue/css/core.css';
@@ -22,11 +24,16 @@ import '@ionic/vue/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import './theme/fontawesome/css/all.css';
+
+import store from "@/store/index";
 
 const app = createApp(App)
-  .use(IonicVue)
-  .use(router);
-  
+    .use(IonicVue)
+    .use(router)
+    .use(Vuex)
+    .use(store);
+
 router.isReady().then(() => {
-  app.mount('#app');
-});
+    app.mount('#app');
+})
