@@ -1,6 +1,6 @@
 <template>
   <ion-app>
-    <ion-router-outlet/>
+    <ion-router-outlet v-if="runApp()"/>
   </ion-app>
 </template>
 
@@ -14,16 +14,34 @@ export default {
     IonApp,
     IonRouterOutlet
   },
+  computed: {
+    userProfile() {
+      return this.$store.state.auth.userProfile
+    },
+  },
+  methods: {
+    runApp() {
+      return (this.$route.name === 'login' || this.$route.name === 'init' || this.userProfile)
+    }
+  },
+  watch: {
+    userProfile() {
+      if (this.userProfile) {
+        if (this.$route.name === 'login' || this.$route.name === 'init') {
+          this.$router.push('/dashboard')
+        }
+      }
+    }
+  },
   mounted() {
     fb.auth.onAuthStateChanged((user) => {
-      if (user){
+      if (user) {
         this.$store.dispatch('auth/fetchUserProfile', user)
-      }
-      else{
+      } else {
         this.$store.commit('auth/setUserProfile', null)
       }
     })
-  }
+  },
 };
 </script>
 

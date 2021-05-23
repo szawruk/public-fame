@@ -1,9 +1,9 @@
 <template>
   <div class="post" :class="hideShowCommentsButton ? '' : 'margin-bottom'">
     <div class="post-header">
-      <img class="post-author-avatar" :src="post.authorAvatar" :alt="post.authorName"/>
+      <img class="post-author-avatar" :src="post.authorAvatar" :alt="post.authorNick"/>
       <div class="post-author-name">
-        {{ post.authorName }}
+        {{ post.authorNick }}
       </div>
     </div>
     <div class="post-image-wrapper">
@@ -35,11 +35,11 @@
     </div>
     <div class="description-wrapper">
       <p class="description">
-        <span>{{ post.authorName }}</span> {{ post.description }}
+        <span>{{ post.authorNick }}</span> {{ post.description }}
       </p>
     </div>
     <div class="comments-wrapper" v-if="!hideShowCommentsButton">
-      <ion-button  @click="openComments()">
+      <ion-button  @click="openComments(post.postId)">
         Show comments
       </ion-button>
     </div>
@@ -57,7 +57,7 @@ export default {
   },
   methods:{
     openComments(){
-
+      this.$router.push('/post/' + this.post.postId)
     }
   }
 }
@@ -69,7 +69,7 @@ export default {
   display: flex;
   flex-direction: column;
 
-  .margin-bottom{
+  &.margin-bottom{
     margin-bottom: 20px;
   }
 

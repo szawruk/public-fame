@@ -1,9 +1,32 @@
 <template>
   <ion-page>
     <ion-content :fullscreen="true">
-      <app-header/>
+      <app-header name="Comments"/>
       <div class="comments-container">
-        <post :post="post" :key="post.name" :hide-show-comments-button="true"/>
+        <post :post="post" :key="post.postId" :hide-show-comments-button="true" v-if="post"/>
+        <div class="comment" v-for="comment in comments" :key="comment.content">
+          <div class="avatar-wrapper">
+            <img :src="comment.authorAvatar" class="comment-avatar"/>
+          </div>
+          <div class="content-container">
+            <div class="content-header">
+              <span class="nick">{{ comment.nick }}</span>
+              <span class="time">{{ timeConverter(comment.createdOn.seconds) }}</span>
+            </div>
+            <div>
+              {{ comment.content }}
+            </div>
+
+          </div>
+
+        </div>
+        <div class="add-comment-container">
+          <ion-input :value="newComment" type="text" placeholder="Enter comment..." required
+                     @change="newComment= $event.target.value"></ion-input>
+          <ion-button @click="addComment()">
+            <i class="fas fa-paper-plane"></i>
+          </ion-button>
+        </div>
       </div>
     </ion-content>
   </ion-page>
@@ -46,80 +69,111 @@ export default {
     IonActionSheet,
     AppHeader
   },
+  data() {
+    return {
+      newComment: ''
+    }
+  },
   methods: {
-    doLogin() {
-      this.$router.push('/dashboard')
+    addComment() {
+      this.$store.dispatch('comments/addComment', {postId: this.post.postId, comment: this.newComment})
+      this.newComment = ''
     },
-    openRegisterPage() {
-      this.$router.push('/register')
-    },
-
+    timeConverter(UNIX_timestamp) {
+      let a = new Date(UNIX_timestamp * 1000);
+      let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      let year = a.getFullYear();
+      let month = months[a.getMonth()];
+      let date = a.getDate();
+      let hour = a.getHours();
+      let min = a.getMinutes();
+      let sec = a.getSeconds();
+      return date + ' ' + month + ' ' + year;
+    }
   },
   computed: {
+    // post() {
+    //   return (
+    //       {
+    //         authorAvatar: 'https://firebasestorage.googleapis.com/v0/b/publicfame-6e82f.appspot.com/o/avatar1.jpg?alt=media&token=e2af1daa-5165-40d6-8e86-09a707082561',
+    //         authorName: 'Petro Wineto',
+    //         postImage: 'https://firebasestorage.googleapis.com/v0/b/publicfame-6e82f.appspot.com/o/post1.jpg?alt=media&token=00106521-1da5-4e02-8a97-effae5ef8404',
+    //         description: 'To bardzo ciekawa inicjatywa podjęta przez moją osobę. Sam murowałem to. Dzięki temu wykształciłem podstawowe zachowania prepperskie.',
+    //         postId: 1
+    //       }
+    //   )
+    // },
+    comments() {
+      return this.$store.state.comments.comments
+    },
     post() {
-      return (
-          {
-            authorAvatar: 'https://firebasestorage.googleapis.com/v0/b/publicfame-6e82f.appspot.com/o/avatar1.jpg?alt=media&token=e2af1daa-5165-40d6-8e86-09a707082561',
-            authorName: 'Petro Wineto',
-            postImage: 'https://firebasestorage.googleapis.com/v0/b/publicfame-6e82f.appspot.com/o/post1.jpg?alt=media&token=00106521-1da5-4e02-8a97-effae5ef8404',
-            description: 'To bardzo ciekawa inicjatywa podjęta przez moją osobę. Sam murowałem to. Dzięki temu wykształciłem podstawowe zachowania prepperskie.'
-          }
-      )
+      return this.$store.state.posts.openedPost
     }
   },
   mounted() {
-    if (!this.$store.state.auth.userProfile) {
-      this.$router.push('/')
-    }
-  }
+    this.$store.dispatch('comments/loadComments', this.$route.params.id)
+    this.$store.dispatch('posts/loadOpenedPost', this.$route.params.id)
+  },
 }
 </script>
 
 <style scoped lang="scss">
-.cancel-button {
-  color: red;
-}
+.comments-container {
+  padding-bottom: 45px;
 
-
-.login {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  color: white;
-
-  .logo-wrapper {
-    height: 150px;
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-
-    img {
-      height: 100%;
-    }
-  }
-
-  .login-form-container {
-    display: flex;
+  .comment {
     width: 100%;
-    flex-direction: column;
-    align-items: center;
-    height: 300px;
+    padding: 7px 10px;
+    display: flex;
+    border-bottom: 1px grey solid;
 
-    .title {
-      color: white;
-      font-size: 36px;
-      margin-top: 40px;
-      margin-bottom: 40px;
+    .avatar-wrapper {
+      width: 25px;
+      display: flex;
+      justify-content: center;
+
+      .comment-avatar {
+        height: 25px;
+        width: 25px;
+        border-radius: 50%;
+      }
     }
 
-    .login-input, .password-input {
-      padding-bottom: 20px;
+    .content-container {
+      display: flex;
+      flex-direction: column;
+      padding-left: 8px;
+
+      .content-header {
+        margin: 0;
+        padding-bottom: 5px;
+        color: #d7d7d7;
+        font-size: 14px;
+
+        .nick {
+          font-weight: bold;
+          color: #e000a6;
+          padding-right: 8px;
+        }
+
+        .time {
+          font-size: 12px;
+          color: grey;
+        }
+      }
     }
 
   }
 
+  .add-comment-container {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 45px;
+    background-color: #292929;
+    align-items: center;
+  }
 }
 
 </style>

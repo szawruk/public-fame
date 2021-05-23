@@ -1,7 +1,10 @@
 <template>
   <ion-header class="ion-no-border">
     <ion-toolbar>
-      <ion-title size="small">Posts dashboard</ion-title>
+      <ion-title size="small">{{name}}</ion-title>
+      <ion-buttons slot="start" v-if="!hideBackButton">
+        <ion-back-button default-href="/" text=""></ion-back-button>
+      </ion-buttons>
       <ion-buttons slot="end">
         <img src="../../resources/icon.png" alt="logo" class="header-logo" @click="openMenu"/>
       </ion-buttons>
@@ -24,7 +27,8 @@ import ActionsMenu from "@/components/ActionsMenu";
 export default {
   name: 'AppHeader',
   props: {
-    name: String
+    name: String,
+    hideBackButton: Boolean
   },
   components: {
     IonButtons, IonBackButton, IonHeader, IonToolbar, IonButton, ActionsMenu

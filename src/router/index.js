@@ -3,6 +3,7 @@ import Login from "@/components/Login";
 import InitialPage from "@/components/InitialPage";
 import Dashboard from "@/components/Dashboard";
 import Signup from "@/components/Signup";
+import Comments from "@/components/Comments";
 
 const routes = [
   {
@@ -19,6 +20,11 @@ const routes = [
     path: '/signup/',
     component: Signup,
     name: 'signup'
+  },
+  {
+    path: '/post/:id',
+    component: Comments,
+    name: 'comments'
   },
   {
     path: '/',

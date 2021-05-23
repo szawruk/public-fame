@@ -5,7 +5,6 @@ export default {
     namespaced: true,
     state: {
         userLoggedIn: false,
-        userTeamId: 0,
         userProfile: null
     },
     mutations: {
@@ -21,7 +20,7 @@ export default {
                 dispatch('fetchUserProfile', user)
             }
         },
-        async logout({dispatch}, form) {
+        async logout() {
             await fb.auth.signOut()
             await router.push('/')
         },
@@ -29,6 +28,7 @@ export default {
             const {user} = await fb.auth.createUserWithEmailAndPassword(form.email, form.password)
 
             await fb.usersCollection.doc(user.uid).set({
+                userId: user.uid,
                 email: form.email,
                 nick: form.nick,
             })
@@ -37,11 +37,9 @@ export default {
             if (user) {
                 const userProfile = await fb.usersCollection.doc(user.uid).get()
                 commit('setUserProfile', userProfile.data())
-                await router.push('dashboard')
             } else {
                 await router.push('login')
             }
-
         },
 
     }
