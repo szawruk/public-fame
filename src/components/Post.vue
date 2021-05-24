@@ -11,7 +11,7 @@
     </div>
     <div class="reactions-container">
       <div class="left-side">
-        <div class="reaction reaction-thumbs-up">
+        <div class="reaction reaction-thumbs-up" @click="addLike(post.postId)">
           <i class="fas fa-thumbs-up"></i>
           <div class="count">122</div>
         </div>
@@ -58,6 +58,9 @@ export default {
   methods:{
     openComments(){
       this.$router.push('/post/' + this.post.postId)
+    },
+    addLike(postId){
+      this.$store.dispatch('posts/addLike', postId)
     }
   }
 }
@@ -118,6 +121,7 @@ export default {
 
     .reaction {
       display: flex;
+      cursor: pointer;
 
       .count {
         margin-left: 8px;

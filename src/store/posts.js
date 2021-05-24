@@ -102,12 +102,12 @@ export default {
             commit('setOpenedUserPosts', tempPosts)
         },
         async addLike({dispatch, commit}, postId) {
-
             let postReactions = fb.reactionsCollection.where('postId', '==', postId);
             postReactions = await postReactions.where('userId', '==', fb.auth.currentUser.uid).get();
+            let response = null
 
-            if(postReactions.length == 0){
-                let response = await fb.reactionsCollection.add({
+            if(postReactions.docs.length === 0){
+                response = await fb.reactionsCollection.add({
                     postId: postId,
                     type: 'like',
                     userId: fb.auth.currentUser.uid,

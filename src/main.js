@@ -25,6 +25,7 @@ import '@ionic/vue/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import './theme/fontawesome/css/all.css';
+// import { ImagePicker } from '@ionic-native/image-picker';
 
 import store from "@/store/index";
 
@@ -32,6 +33,7 @@ const app = createApp(App)
     .use(IonicVue)
     .use(router)
     .use(Vuex)
+    // .use(ImagePicker)
     .use(store);
 
 router.isReady().then(() => {
