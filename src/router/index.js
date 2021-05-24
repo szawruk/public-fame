@@ -4,6 +4,7 @@ import InitialPage from "@/components/InitialPage";
 import Dashboard from "@/components/Dashboard";
 import Signup from "@/components/Signup";
 import Comments from "@/components/Comments";
+import User from "@/components/User";
 
 const routes = [
   {
@@ -25,6 +26,11 @@ const routes = [
     path: '/post/:id',
     component: Comments,
     name: 'comments'
+  },
+  {
+    path: '/user/:id',
+    component: User,
+    name: 'user'
   },
   {
     path: '/',

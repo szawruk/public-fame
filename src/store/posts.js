@@ -4,11 +4,15 @@ export default {
     namespaced: true,
     state: {
         dashboardPosts: [],
+        openedUserPosts: [],
         openedPost: {}
     },
     mutations: {
         setOpenedPost(state, val) {
             state.openedPost = val
+        },
+        setOpenedUserPosts(state, val) {
+            state.openedUserPosts = val
         },
         setDashboardPosts(state, val) {
             state.dashboardPosts = val
@@ -49,13 +53,13 @@ export default {
             posts.forEach(post => {
                 let postData = post.data()
                 tempPosts.push(postData)
-                if (!usersIds.includes(postData.userId)){
+                if (!usersIds.includes(postData.userId)) {
                     usersIds.push(postData.userId)
                 }
             })
 
             let tempUsers = {}
-            while (usersIds.length){
+            while (usersIds.length) {
                 const batch = usersIds.splice(0, 10);
                 const users = await fb.usersCollection.where('userId', 'in', batch).get()
                 users.forEach(user => {
@@ -70,6 +74,32 @@ export default {
             })
 
             commit('setDashboardPosts', tempPosts)
+        },
+        async loadOpenedUserPosts({commit}, userId) {
+            commit('setOpenedUserPosts', [])
+
+            let posts = await fb.postsCollection.where('userId', '==', userId).get()
+
+            let tempPosts = []
+            let usersIds = []
+
+            posts.forEach(post => {
+                let postData = post.data()
+                tempPosts.push(postData)
+                if (!usersIds.includes(postData.userId)) {
+                    usersIds.push(postData.userId)
+                }
+            })
+
+            let user = await fb.usersCollection.where('userId', '==', userId).get()
+            user = await user.docs[0].data()
+
+            tempPosts.forEach(comment => {
+                comment['authorNick'] = user.nick
+                comment['authorAvatar'] = user.avatar
+            })
+
+            commit('setOpenedUserPosts', tempPosts)
         },
     }
 }
