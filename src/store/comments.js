@@ -11,7 +11,7 @@ export default {
         },
     },
     actions: {
-        async loadComments({dispatch, commit}, postId) {
+        async loadComments({dispatch, commit, rootState}, postId) {
             commit('setComments', [])
             const comments = await fb.commentsCollection.where('postId', '==', postId).orderBy('createdOn').get()
 
@@ -21,7 +21,7 @@ export default {
                 let commentData = comment.data()
                 let url = ""
                 try{
-                    url = await fb.storage.ref(`${commentData.userId}.jpg`).getDownloadURL();
+                    url = await fb.storage.ref(`Users/${commentData.userId}.jpg`).getDownloadURL();
                     commentData['authorAvatar'] = url; 
                 }
                 catch(err){
@@ -37,6 +37,7 @@ export default {
                 createdOn: new Date(),
                 content: data.comment,
                 postId: data.postId,
+                nick: rootState.auth.userProfile.nick,
                 userId: fb.auth.currentUser.uid,
             })
 
