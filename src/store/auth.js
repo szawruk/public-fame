@@ -31,6 +31,8 @@ export default {
                 userId: user.uid,
                 email: form.email,
                 nick: form.nick,
+                fameCD: new Date(),
+                shameCD: new Date(),
             })
         },
         async fetchUserProfile({commit}, user) {

@@ -1,5 +1,17 @@
 import * as fb from '../firebase'
 
+timeConverter(UNIX_timestamp) {
+    let a = new Date(UNIX_timestamp * 1000);
+    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    let year = a.getFullYear();
+    let month = months[a.getMonth()];
+    let date = a.getDate();
+    let hour = a.getHours();
+    let min = a.getMinutes();
+    let sec = a.getSeconds();
+    return date + ' ' + month + ' ' + year;
+  }
+
 export default {
     namespaced: true,
     state: {
@@ -110,6 +122,65 @@ export default {
                 response = await fb.reactionsCollection.add({
                     postId: postId,
                     type: 'like',
+                    userId: fb.auth.currentUser.uid,
+                });
+            }
+            else{
+                console.log("Już dodano reakcje");
+            }
+            console.log(response);
+        },
+        async addDislike({dispatch, commit}, postId) {
+            let postReactions = fb.reactionsCollection.where('postId', '==', postId);
+            postReactions = await postReactions.where('userId', '==', fb.auth.currentUser.uid).get();
+            let response = null
+
+            if(postReactions.docs.length === 0){
+                response = await fb.reactionsCollection.add({
+                    postId: postId,
+                    type: 'dislike',
+                    userId: fb.auth.currentUser.uid,
+                });
+            }
+            else{
+                console.log("Już dodano reakcje");
+            }
+            console.log(response);
+        },
+        async addFame({dispatch, commit, rootState}, postId) {
+            let postReactions = fb.reactionsCollection.where('postId', '==', postId);
+            postReactions = await postReactions.where('userId', '==', fb.auth.currentUser.uid).get();
+            let response = null
+
+            console.log(new Date(rootState.auth.userProfile.fameCD *1000))
+            console.log(Date.now)
+            // if(postReactions.docs.length === 0){
+
+            //     if(new Date(rootState.auth.userProfile.fameCD *1000) < Date.now )
+            //     {
+            //         response = await fb.reactionsCollection.add({
+            //             postId: postId,
+            //             type: 'fame',
+            //             userId: fb.auth.currentUser.uid,
+            //         });
+            //     }
+                
+            // }
+            // else{
+            //     console.log("Już dodano reakcje");
+            // }
+            console.log(response);
+        },
+        async addShame({dispatch, commit, rootState}, postId) {
+            let postReactions = fb.reactionsCollection.where('postId', '==', postId);
+            postReactions = await postReactions.where('userId', '==', fb.auth.currentUser.uid).get();
+            let response = null
+
+            if(postReactions.docs.length === 0){
+                timeConverter
+                response = await fb.reactionsCollection.add({
+                    postId: postId,
+                    type: 'shame',
                     userId: fb.auth.currentUser.uid,
                 });
             }
