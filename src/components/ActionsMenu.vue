@@ -74,18 +74,14 @@ export default {
         outputType: 1
       };
       this.imageResponse = [];
-      this.imagePicker.getPictures(this.options).then((results) => {
+      this.$imagePicker.getPictures(this.options).then((results) => {
         for (var i = 0; i < results.length; i++) {
           this.imageResponse.push('data:image/jpeg;base64,' + results[i]);
         }
       }, (err) => {
         alert(err);
       });
-
-
       }
-
-
   },
   computed:{
     actionsMenuOpened:{

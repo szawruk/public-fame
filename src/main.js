@@ -32,9 +32,9 @@ import store from "@/store/index";
 const app = createApp(App)
     .use(IonicVue)
     .use(router)
-    .use(Vuex)
-    // .use(ImagePicker)
     .use(store);
+
+// app.config.globalProperties.$imagePicker = ImagePicker
 
 router.isReady().then(() => {
     app.mount('#app');

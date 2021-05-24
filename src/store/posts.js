@@ -52,6 +52,7 @@ export default {
             post['dislikeCount'] = dislikeCount;
             post['fameCount'] = fameCount;
             post['shameCount'] = shameCount;
+            console.log(post)
             commit('setOpenedPost', post)
         },
         async addComment({dispatch, commit, rootState}, data) {

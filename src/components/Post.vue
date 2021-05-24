@@ -13,11 +13,11 @@
       <div class="left-side">
         <div class="reaction reaction-thumbs-up" @click="addLike(post.postId)">
           <i class="fas fa-thumbs-up"></i>
-          <div class="count">122</div>
+          <div class="count">{{ post.likeCount }}</div>
         </div>
         <div class="reaction reaction-thumbs-down" @click="addDislike(post.postId)">
           <i class="fas fa-thumbs-down"></i>
-          <div class="count">3</div>
+          <div class="count">{{ post.dislikeCount }}</div>
         </div>
       </div>
       <div class="right-side">
@@ -25,11 +25,11 @@
           <img
               src="https://firebasestorage.googleapis.com/v0/b/publicfame-6e82f.appspot.com/o/fame.png?alt=media&token=6a8b95af-70f3-4fcd-887b-e55f159d85be"
               alt="fame-reaction"/>
-          <div class="count">23</div>
+          <div class="count">{{ post.fameCount }}</div>
         </div>
         <div class="reaction reaction-shame" @click="addShame(post.postId)">
           <i class="fas fa-times-circle"></i>
-          <div class="count">13</div>
+          <div class="count">{{ post.shameCount }}</div>
         </div>
       </div>
     </div>
