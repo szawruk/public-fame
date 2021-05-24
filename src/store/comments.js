@@ -13,12 +13,13 @@ export default {
     actions: {
         async loadComments({dispatch, commit, rootState}, postId) {
             commit('setComments', [])
-            const comments = await fb.commentsCollection.where('postId', '==', postId).orderBy('createdOn').get()
+            let comments = await fb.commentsCollection.where('postId', '==', postId).orderBy('createdOn').get()
 
             let tempComments = []
+            comments = comments.docs
 
-            comments.forEach(async function(comment)  {
-                let commentData = comment.data()
+            for (let i = 0; i < comments.length; i++) {
+                let commentData = comments[i].data()
                 let url = ""
                 try{
                     url = await fb.storage.ref(`Users/${commentData.userId}.jpg`).getDownloadURL();
@@ -27,9 +28,9 @@ export default {
                 catch(err){
                     console.log(err)
                 }
-                  
                 tempComments.push(commentData)
-            })
+            }
+
             commit('setComments', tempComments)
         },
         async addComment({dispatch, commit, rootState}, data) {

@@ -6,9 +6,8 @@
         <post :post="post" :key="post.postId" :hide-show-comments-button="true" v-if="post"/>
         <div class="comment" v-for="comment in comments" :key="comment.content" >
           <div class="avatar-wrapper">
-            
-            <img v-if="comment.authorAvatar" :src="comment.authorAvatar" class="comment-avatar"/>
-            <img v-else src="../../resources/icon.png" class="comment-avatar"/>
+            <img v-if="comment.authorAvatar" :src="comment.authorAvatar" class="comment-avatar" alt="avatar"/>
+            <img v-else src="../../resources/icon.png" class="comment-avatar" alt="avatar"/>
           </div>
           <div class="content-container">
             <div class="content-header">

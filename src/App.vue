@@ -21,13 +21,13 @@ export default {
   },
   methods: {
     runApp() {
-      return (this.$route.name === 'login' || this.$route.name === 'init' || this.userProfile)
+      return (this.$route.name === 'login' || this.$route.name === 'init' || this.$route.name === 'signup' || this.userProfile)
     }
   },
   watch: {
     userProfile() {
       if (this.userProfile) {
-        if (this.$route.name === 'login' || this.$route.name === 'init') {
+        if (this.$route.name === 'login' || this.$route.name === 'init' || this.$route.name === 'signup') {
           this.$router.push('/dashboard')
         }
       }
