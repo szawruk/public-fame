@@ -24,13 +24,34 @@ export default {
             commit('setOpenedPost', null)
 
             let post = await fb.postsCollection.where('postId', '==', postId).get()
-            post = await post.docs[0].data()
+            post = post.docs[0].data()
 
             let user = await fb.usersCollection.where('userId', '==', post.userId).get()
-            user = await user.docs[0].data()
+            user = user.docs[0].data()
 
             post['authorNick'] = user.nick
             post['authorAvatar'] = 'https://firebasestorage.googleapis.com/v0/b/publicfame-6e82f.appspot.com/o/avatar1.jpg?alt=media&token=e2af1daa-5165-40d6-8e86-09a707082561'
+            
+            let postReactions = await fb.reactionsCollection.where('postId', '==', postId).get();
+            let likeCount = 0;
+            let dislikeCount = 0;
+            let fameCount = 0;
+            let shameCount = 0;
+            postReactions.forEach(reaction => {
+                let reactionData = reaction.data()
+                if(reactionData.type === 'like')
+                    likeCount++;
+                else if(reactionData.type === 'dislike')
+                    dislikeCount++
+                else if(reactionData.type === 'fame')
+                    fameCount++
+                else if(reactionData.type === 'shame')
+                    shameCount++
+            });
+            post['likeCount'] = likeCount;
+            post['dislikeCount'] = dislikeCount;
+            post['fameCount'] = fameCount;
+            post['shameCount'] = shameCount;
             commit('setOpenedPost', post)
         },
         async addComment({dispatch, commit, rootState}, data) {
@@ -184,7 +205,7 @@ export default {
             else{
                 console.log("Już dodano reakcje");
             }
-            console.log(response);
+            
             console.log(response);
         },
     }
