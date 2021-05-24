@@ -139,24 +139,25 @@ export default {
             postReactions = await postReactions.where('userId', '==', fb.auth.currentUser.uid).get();
             let response = null
 
-            console.log(new Date(rootState.auth.userProfile.fameCD * 1000))
-            console.log(new Date())
-            console.log(new Date(rootState.auth.userProfile.fameCD *1000) < new Date())
-            // if(postReactions.docs.length === 0){
-
-            //     if(new Date(rootState.auth.userProfile.fameCD *1000) < Date.now )
-            //     {
-            //         response = await fb.reactionsCollection.add({
-            //             postId: postId,
-            //             type: 'fame',
-            //             userId: fb.auth.currentUser.uid,
-            //         });
-            //     }
-
-            // }
-            // else{
-            //     console.log("Już dodano reakcje");
-            // }
+            if(postReactions.docs.length === 0){
+                if(rootState.auth.userProfile.fameCD.seconds < new Date().getTime() / 1000 )
+                {
+                    response = await fb.reactionsCollection.add({
+                        postId: postId,
+                        type: 'fame',
+                        userId: fb.auth.currentUser.uid,
+                    });
+                    fb.usersCollection.doc(fb.auth.currentUser.uid).update({
+                        fameCD: new Date(new Date().setDate(new Date().getDate()+1))
+                    });
+                }
+                else{
+                    console.log("Nie możesz używać Fame więcej niż raz na 24h")
+                }
+            }
+            else{
+                console.log("Już dodano reakcje");
+            }
             console.log(response);
         },
         async addShame({dispatch, commit, rootState}, postId) {
@@ -164,15 +165,26 @@ export default {
             postReactions = await postReactions.where('userId', '==', fb.auth.currentUser.uid).get();
             let response = null
 
-            if (postReactions.docs.length === 0) {
-                response = await fb.reactionsCollection.add({
-                    postId: postId,
-                    type: 'shame',
-                    userId: fb.auth.currentUser.uid,
-                });
-            } else {
+            if(postReactions.docs.length === 0){
+                if(rootState.auth.userProfile.shameCD.seconds < new Date().getTime() / 1000 )
+                {
+                    response = await fb.reactionsCollection.add({
+                        postId: postId,
+                        type: 'shame',
+                        userId: fb.auth.currentUser.uid,
+                    });
+                    fb.usersCollection.doc(fb.auth.currentUser.uid).update({
+                        shameCD: new Date(new Date().setDate(new Date().getDate()+1))
+                    });
+                }
+                else{
+                    console.log("Nie możesz używać Shame więcej niż raz na 24h")
+                }
+            }
+            else{
                 console.log("Już dodano reakcje");
             }
+            console.log(response);
             console.log(response);
         },
     }
