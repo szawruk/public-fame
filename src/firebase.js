@@ -21,6 +21,7 @@ firebase.initializeApp(firebaseConfig)
 
 const db = firebase.firestore()
 const auth = firebase.auth()
+const storage = firebase.storage();
 
 const usersCollection = db.collection('users')
 const postsCollection = db.collection('posts')
@@ -30,6 +31,7 @@ const likesCollection = db.collection('likes')
 export {
     db,
     auth,
+    storage,
     usersCollection,
     postsCollection,
     commentsCollection,

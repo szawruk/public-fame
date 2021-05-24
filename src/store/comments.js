@@ -16,30 +16,20 @@ export default {
             const comments = await fb.commentsCollection.where('postId', '==', postId).orderBy('createdOn').get()
 
             let tempComments = []
-            let usersIds = []
 
-            comments.forEach(comment => {
+            comments.forEach(async function(comment)  {
                 let commentData = comment.data()
-                tempComments.push(commentData)
-                if (!usersIds.includes(commentData.userId)){
-                    usersIds.push(commentData.userId)
+                let url = ""
+                try{
+                    url = await fb.storage.ref(`${commentData.userId}.jpg`).getDownloadURL();
+                    commentData['authorAvatar'] = url; 
                 }
+                catch(err){
+                    console.log(err)
+                }
+                  
+                tempComments.push(commentData)
             })
-
-            let tempUsers = {}
-            while (usersIds.length){
-                const batch = usersIds.splice(0, 10);
-                const users = await fb.usersCollection.where('userId', 'in', batch).get()
-                users.forEach(user => {
-                    let userData = user.data()
-                    tempUsers[userData.userId] = userData
-                })
-            }
-            tempComments.forEach(comment => {
-                comment['nick'] = tempUsers[comment.userId].nick
-                comment['authorAvatar'] = tempUsers[comment.userId].avatar
-            })
-
             commit('setComments', tempComments)
         },
         async addComment({dispatch, commit, rootState}, data) {
