@@ -1,6 +1,6 @@
 <template>
   <div class="post" :class="hideShowCommentsButton ? '' : 'margin-bottom'">
-    <div class="post-header">
+    <div class="post-header" v-if="!hideUserHeader">
       <img class="post-author-avatar" :src="post.authorAvatar" :alt="post.authorNick"/>
       <div class="post-author-name">
         {{ post.authorNick }}
@@ -51,7 +51,7 @@ import {IonButtons, IonBackButton, IonPage, IonHeader, IonToolbar, IonTitle, Ion
 
 export default {
   name: "Post",
-  props: ['post', 'hideShowCommentsButton'],
+  props: ['post', 'hideShowCommentsButton', 'hideUserHeader'],
   components: {
     IonButtons, IonBackButton, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButton
   },

@@ -9,23 +9,25 @@
               <img :src="user.avatar" class="user-image"/>
             </div>
             <div class="followers-count">
-
+              Followers: {{user.followers}}
             </div>
             <div class="action-button">
-
+              <ion-button  @click="openComments(post.postId)" v-if="user.userId ==">
+                Show comments
+              </ion-button>
             </div>
           </div>
           <div class="right-side">
-              <div class="nick">
-                {{user.nick}}
-              </div>
+            <div class="nick">
+              {{ user.nick }}
+            </div>
             <div class="description">
-              {{user.description}}
+              {{ user.description }}
             </div>
           </div>
         </div>
         <div class="posts-container">
-          <post v-for="post in posts" :post="post" :key="post.name"/>
+          <post v-for="post in posts" :post="post" :key="post.name" :hide-user-header="true"/>
         </div>
       </div>
 
@@ -58,19 +60,25 @@ export default {
   },
   components: {
     ActionsMenu,
-    IonButtons, IonBackButton, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, Post, IonActionSheet, AppHeader
+    IonButtons,
+    IonBackButton,
+    IonPage,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonButton,
+    Post,
+    IonActionSheet,
+    AppHeader
   },
   methods: {
-    doLogin() {
-      this.$router.push('/dashboard')
-    },
-    openRegisterPage() {
-      this.$router.push('/register')
-    },
-
   },
   computed: {
     user() {
+      return this.$store.state.users.openedUser
+    },
+    loggedUser() {
       return this.$store.state.users.openedUser
     },
     posts() {
@@ -85,18 +93,52 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.user-container{
+.user-container {
   width: 100%;
 
-  .user-info-container{
+  .user-info-container {
     display: flex;
+    padding: 10px;
+    background-color: rgb(47, 47, 47);
 
-    .left-side{
-      width: 25%;
+    .left-side {
+      width: 120px;
+      padding: 0 20px 0 0;
+
+      .avatar-wrapper {
+        img {
+          border-radius: 50%;
+          height: 100px;
+          object-fit: cover;
+          object-position: center;
+        }
+      }
+      .followers-count{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+    }
+
+    .right-side {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+
+      .nick {
+        width: 100%;
+        font-weight: bold;
+        font-size: 28px;
+      }
+
+      .description {
+        padding-top: 10px;
+        text-align: justify;
+      }
     }
   }
 
-  .posts-container{
+  .posts-container {
 
   }
 }
