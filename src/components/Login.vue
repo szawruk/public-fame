@@ -69,7 +69,6 @@ export default {
         email: this.loginForm.email,
         password: this.loginForm.password
       })
-      // this.$router.push('/dashboard')
     },
     openRegisterPage() {
       this.$router.push('/signup')

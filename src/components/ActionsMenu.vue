@@ -24,6 +24,7 @@ export default {
           text: 'My account',
           handler: () => {
             this.closeMenu()
+            this.$router.push('/user/' + this.loggedUser.userId)
           },
         },
         {
@@ -34,19 +35,11 @@ export default {
             this.$store.dispatch('auth/logout')
           },
         },
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'cancel-button',
-          handler: () => {
-          },
-        },
       ]
     }
   },
   methods:{
     closeMenu(){
-      console.log('lalal')
       this.$store.commit('main/setActionsMenuOpened', false)
     }
   },
@@ -58,9 +51,10 @@ export default {
       set: function(value){
         this.$store.commit('main/setActionsMenuOpened', value)
       }
-
-
-    }
+    },
+    loggedUser() {
+      return this.$store.state.auth.userProfile
+    },
   }
 }
 </script>

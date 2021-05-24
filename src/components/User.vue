@@ -9,11 +9,14 @@
               <img :src="user.avatar" class="user-image"/>
             </div>
             <div class="followers-count">
-              Followers: {{user.followers}}
+              {{user.followers}} followers
             </div>
             <div class="action-button">
-              <ion-button  @click="openComments(post.postId)" v-if="user.userId ==">
-                Show comments
+              <ion-button  @click="editAccount()" v-if="user.userId === loggedUser.userId">
+                Edit
+              </ion-button>
+              <ion-button  @click="followUser()" v-if="user.userId !== loggedUser.userId">
+                Follow
               </ion-button>
             </div>
           </div>
@@ -73,13 +76,19 @@ export default {
     AppHeader
   },
   methods: {
+    editAccount(){
+      this.$router.push('/user/edit')
+    },
+    followUser(){
+
+    }
   },
   computed: {
     user() {
       return this.$store.state.users.openedUser
     },
     loggedUser() {
-      return this.$store.state.users.openedUser
+      return this.$store.state.auth.userProfile
     },
     posts() {
       return this.$store.state.posts.openedUserPosts
@@ -99,7 +108,9 @@ export default {
   .user-info-container {
     display: flex;
     padding: 10px;
+    padding-right: 20px;
     background-color: rgb(47, 47, 47);
+    margin-bottom: 10px;
 
     .left-side {
       width: 120px;
@@ -113,10 +124,15 @@ export default {
           object-position: center;
         }
       }
-      .followers-count{
+      .followers-count, .action-button{
         width: 100%;
         display: flex;
         justify-content: center;
+      }
+      .followers-count{
+        font-weight: bold;
+        padding-top: 5px;
+        font-size: 15px;
       }
     }
 
@@ -134,6 +150,7 @@ export default {
       .description {
         padding-top: 10px;
         text-align: justify;
+        font-size: 15px;
       }
     }
   }

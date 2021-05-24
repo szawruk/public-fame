@@ -1,4 +1,5 @@
 import * as fb from '../firebase'
+import router from "@/router";
 
 export default {
     namespaced: true,
@@ -18,6 +19,11 @@ export default {
             user = await user.docs[0].data()
 
             commit('setOpenedUser', user)
+        },
+        async updateUser({dispatch, commit}, data) {
+            await fb.usersCollection.doc(fb.auth.currentUser.uid).update({description: data.description})
+            dispatch('loadOpenedUser', fb.auth.currentUser.uid)
+            await router.push('/user/' + fb.auth.currentUser.uid)
         },
     }
 }

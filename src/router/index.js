@@ -5,6 +5,7 @@ import Dashboard from "@/components/Dashboard";
 import Signup from "@/components/Signup";
 import Comments from "@/components/Comments";
 import User from "@/components/User";
+import EditAccount from "@/components/EditAccount";
 
 const routes = [
   {
@@ -31,6 +32,11 @@ const routes = [
     path: '/user/:id',
     component: User,
     name: 'user'
+  },
+  {
+    path: '/user/edit',
+    component: EditAccount,
+    name: 'edit'
   },
   {
     path: '/',

@@ -92,17 +92,6 @@ export default {
     }
   },
   computed: {
-    // post() {
-    //   return (
-    //       {
-    //         authorAvatar: 'https://firebasestorage.googleapis.com/v0/b/publicfame-6e82f.appspot.com/o/avatar1.jpg?alt=media&token=e2af1daa-5165-40d6-8e86-09a707082561',
-    //         authorName: 'Petro Wineto',
-    //         postImage: 'https://firebasestorage.googleapis.com/v0/b/publicfame-6e82f.appspot.com/o/post1.jpg?alt=media&token=00106521-1da5-4e02-8a97-effae5ef8404',
-    //         description: 'To bardzo ciekawa inicjatywa podjęta przez moją osobę. Sam murowałem to. Dzięki temu wykształciłem podstawowe zachowania prepperskie.',
-    //         postId: 1
-    //       }
-    //   )
-    // },
     comments() {
       return this.$store.state.comments.comments
     },
