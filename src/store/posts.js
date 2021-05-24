@@ -1,16 +1,5 @@
 import * as fb from '../firebase'
 
-timeConverter(UNIX_timestamp) {
-    let a = new Date(UNIX_timestamp * 1000);
-    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    let year = a.getFullYear();
-    let month = months[a.getMonth()];
-    let date = a.getDate();
-    let hour = a.getHours();
-    let min = a.getMinutes();
-    let sec = a.getSeconds();
-    return date + ' ' + month + ' ' + year;
-  }
 
 export default {
     namespaced: true,
@@ -118,14 +107,13 @@ export default {
             postReactions = await postReactions.where('userId', '==', fb.auth.currentUser.uid).get();
             let response = null
 
-            if(postReactions.docs.length === 0){
+            if (postReactions.docs.length === 0) {
                 response = await fb.reactionsCollection.add({
                     postId: postId,
                     type: 'like',
                     userId: fb.auth.currentUser.uid,
                 });
-            }
-            else{
+            } else {
                 console.log("Już dodano reakcje");
             }
             console.log(response);
@@ -135,14 +123,13 @@ export default {
             postReactions = await postReactions.where('userId', '==', fb.auth.currentUser.uid).get();
             let response = null
 
-            if(postReactions.docs.length === 0){
+            if (postReactions.docs.length === 0) {
                 response = await fb.reactionsCollection.add({
                     postId: postId,
                     type: 'dislike',
                     userId: fb.auth.currentUser.uid,
                 });
-            }
-            else{
+            } else {
                 console.log("Już dodano reakcje");
             }
             console.log(response);
@@ -152,8 +139,9 @@ export default {
             postReactions = await postReactions.where('userId', '==', fb.auth.currentUser.uid).get();
             let response = null
 
-            console.log(new Date(rootState.auth.userProfile.fameCD *1000))
-            console.log(Date.now)
+            console.log(new Date(rootState.auth.userProfile.fameCD * 1000))
+            console.log(new Date())
+            console.log(new Date(rootState.auth.userProfile.fameCD *1000) < new Date())
             // if(postReactions.docs.length === 0){
 
             //     if(new Date(rootState.auth.userProfile.fameCD *1000) < Date.now )
@@ -164,7 +152,7 @@ export default {
             //             userId: fb.auth.currentUser.uid,
             //         });
             //     }
-                
+
             // }
             // else{
             //     console.log("Już dodano reakcje");
@@ -176,15 +164,13 @@ export default {
             postReactions = await postReactions.where('userId', '==', fb.auth.currentUser.uid).get();
             let response = null
 
-            if(postReactions.docs.length === 0){
-                timeConverter
+            if (postReactions.docs.length === 0) {
                 response = await fb.reactionsCollection.add({
                     postId: postId,
                     type: 'shame',
                     userId: fb.auth.currentUser.uid,
                 });
-            }
-            else{
+            } else {
                 console.log("Już dodano reakcje");
             }
             console.log(response);

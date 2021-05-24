@@ -15,19 +15,19 @@
           <i class="fas fa-thumbs-up"></i>
           <div class="count">122</div>
         </div>
-        <div class="reaction reaction-thumbs-down">
+        <div class="reaction reaction-thumbs-down" @click="addDislike(post.postId)">
           <i class="fas fa-thumbs-down"></i>
           <div class="count">3</div>
         </div>
       </div>
       <div class="right-side">
-        <div class="reaction reaction-fame">
+        <div class="reaction reaction-fame" @click="addFame(post.postId)">
           <img
               src="https://firebasestorage.googleapis.com/v0/b/publicfame-6e82f.appspot.com/o/fame.png?alt=media&token=6a8b95af-70f3-4fcd-887b-e55f159d85be"
               alt="fame-reaction"/>
           <div class="count">23</div>
         </div>
-        <div class="reaction reaction-shame">
+        <div class="reaction reaction-shame" @click="addShame(post.postId)">
           <i class="fas fa-times-circle"></i>
           <div class="count">13</div>
         </div>
@@ -61,7 +61,17 @@ export default {
     },
     addLike(postId){
       this.$store.dispatch('posts/addLike', postId)
-    }
+    },
+    addDislike(postId){
+      this.$store.dispatch('posts/addDislike', postId)
+    },
+    addFame(postId){
+      this.$store.dispatch('posts/addFame', postId)
+    },
+    addShame(postId){
+      this.$store.dispatch('posts/addShame', postId)
+    },
+
   }
 }
 </script>
