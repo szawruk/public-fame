@@ -11,31 +11,31 @@
     </div>
     <div class="reactions-container">
       <div class="left-side">
-        <div class="reaction reaction-thumbs-up" @click="addLike(post.postId)">
-          <i class="fas fa-thumbs-up"></i>
+        <div class="reaction reaction-thumbs-up"  @click="addLike(post.postId)">
+          <i class="fas fa-thumbs-up" v-bind:class="{'reaction-thumbs-up-chosen': post.myReaction == 'like'}"></i>
           <div class="count">{{ post.likeCount }}</div>
         </div>
-        <div class="reaction reaction-thumbs-down" @click="addDislike(post.postId)">
-          <i class="fas fa-thumbs-down"></i>
+        <div class="reaction reaction-thumbs-down"  @click="addDislike(post.postId)">
+          <i class="fas fa-thumbs-down" v-bind:class="{'reaction-thumbs-down-chosen': post.myReaction == 'dislike'}"></i>
           <div class="count">{{ post.dislikeCount }}</div>
         </div>
       </div>
       <div class="right-side">
-        <div class="reaction reaction-fame" @click="addFame(post.postId)">
-          <img
+        <div class="reaction reaction-fame"  @click="addFame(post.postId)">
+          <img v-bind:class="{'reaction-fame-chosen': post.myReaction == 'fame'}"
               src="https://firebasestorage.googleapis.com/v0/b/publicfame-6e82f.appspot.com/o/fame.png?alt=media&token=6a8b95af-70f3-4fcd-887b-e55f159d85be"
               alt="fame-reaction"/>
           <div class="count">{{ post.fameCount }}</div>
         </div>
-        <div class="reaction reaction-shame" @click="addShame(post.postId)">
-          <i class="fas fa-times-circle"></i>
-          <div class="count">{{ post.shameCount }}</div>
+        <div class="reaction reaction-shame"  @click="addShame(post.postId)">
+          <i class="fas fa-times-circle" v-bind:class="{'reaction-shame-chosen': post.myReaction === 'shame'}"></i>
+          <div class="count">{{ post.shameCount }} </div>
         </div>
       </div>
     </div>
     <div class="description-wrapper">
       <p class="description">
-        <span>{{ post.authorNick }}</span> {{ post.description }}
+        <span>{{ post.authorNick }}</span> {{ post.description }} {{post.myReaction}}
       </p>
     </div>
     <div class="comments-wrapper" v-if="!hideShowCommentsButton">
@@ -148,8 +148,15 @@ export default {
         color: green;
         transition: all 0.2s ease-in-out;
       }
-      .reaction-thumbs-up:active {
-        box-shadow: 0 0 2em rgba(15, 221, 15, 0.5);
+      .reaction-thumbs-up-chosen {
+        box-shadow: 0 0 1em rgba(15, 221, 15, 0.7);
+        background:rgba(15, 221, 15, 0.2);
+        border-radius: 25px; 
+      }
+      .reaction-thumbs-up:active > i {
+        box-shadow: 0 0 2em rgba(15, 221, 15, 0.8);
+        border-radius: 25px; 
+        background:rgba(15, 221, 15, 0.2);
       }
 
       .reaction-thumbs-down {
@@ -157,8 +164,14 @@ export default {
         margin-left: 20px;
         transition: all 0.2s ease-in-out;
       }
-      .reaction-thumbs-down:active{
-        box-shadow: 0 0 2em rgba(255, 59, 59, 0.5);
+      .reaction-thumbs-down-chosen {
+        box-shadow: 0 0 1em rgba(255, 40, 40, 0.8);
+        background:rgba(255, 59, 59, 0.3);
+        border-radius: 25px;       
+      }
+      .reaction-thumbs-down:active > i{
+        box-shadow: 0 0 2em rgb(255, 40, 40);
+        background:rgba(255, 59, 59, 0.2);
       }
     }
 
@@ -177,17 +190,30 @@ export default {
           width: 16px;
         }
       }
-      .reaction-fame:active {
-        box-shadow: 0 0 2em #ff60d5;
+      .reaction-fame-chosen{
+        box-shadow: 0 0 1em #ff7adb;
+        background:#ff7adc46;
+        border-radius: 25px;
+      }
+      .reaction-fame:active > img {
+        box-shadow: 0 0 2em #ff7adb;
+        background:#ff60d56b;
+        border-radius: 25px;
       }
       .reaction-shame {
         color: #7878ff;
         padding-right: 10px;
         transition: all 0.2s ease-in-out;
       }
-      .reaction-shame:active {
-        color: #7878ff;
-        box-shadow: 0 0 2em #8282ffde;
+      .reaction-shame-chosen{
+        box-shadow: 0 0 1em #9292ffef;
+        background:#9292ff54;
+        border-radius: 25px;
+      }
+      .reaction-shame:active >i {
+        box-shadow: 0 0 2em #5e5efff5;
+        background:#9292ff63;
+        border-radius: 25px;
       }
     }
   }

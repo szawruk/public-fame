@@ -41,9 +41,7 @@ export default {
 
             let follow = true;
 
-            if(followed.docs.length === 0)
-                follow = true;
-            else
+            if(followed.docs.length !== 0)
                 follow = false;
 
             let response = null;

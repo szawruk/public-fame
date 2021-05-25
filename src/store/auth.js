@@ -33,6 +33,7 @@ export default {
                 nick: form.nick,
                 fameCD: new Date(),
                 shameCD: new Date(),
+                description: "",
             })
         },
         async fetchUserProfile({commit}, user) {

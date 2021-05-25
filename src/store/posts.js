@@ -39,6 +39,10 @@ export default {
             let shameCount = 0;
             postReactions.forEach(reaction => {
                 let reactionData = reaction.data()
+                if(reactionData.userId === fb.auth.currentUser.uid){
+                    console.log("xd")
+                    post['myReaction'] = reactionData.type;
+                }
                 if(reactionData.type === 'like')
                     likeCount++;
                 else if(reactionData.type === 'dislike')
@@ -48,6 +52,7 @@ export default {
                 else if(reactionData.type === 'shame')
                     shameCount++
             });
+
             post['likeCount'] = likeCount;
             post['dislikeCount'] = dislikeCount;
             post['fameCount'] = fameCount;
@@ -102,6 +107,10 @@ export default {
                 let shameCount = 0;
                 postReactions.forEach(reaction => {
                     let reactionData = reaction.data()
+                    if(reactionData.userId === fb.auth.currentUser.uid){
+                        tempPosts[i]['myReaction'] = reactionData.type;
+                        console.log(tempPosts[i]['myReaction'])
+                    }
                     if(reactionData.type === 'like')
                         likeCount++;
                     else if(reactionData.type === 'dislike')
