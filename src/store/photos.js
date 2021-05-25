@@ -13,7 +13,7 @@ export default {
     },
     actions: {
         async savePhoto({dispatch}, photo) {
-            await fb.uploadImage(photo)
+            await fb.uploadAvatar(photo)
         },
 
     }

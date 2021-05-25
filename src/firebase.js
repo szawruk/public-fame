@@ -44,6 +44,21 @@ const uploadImage = (imageURI) => {
     })
 }
 
+const uploadAvatar = (imageURI) => {
+    return new Promise((resolve, reject) => {
+        let storageRef = firebase.storage().ref();
+        let imageRef = storageRef.child('Users').child(auth.currentUser.uid + '.jpg');
+        encodeImageUri(imageURI, function (image64) {
+            imageRef.putString(image64, 'data_url')
+                .then(snapshot => {
+                    resolve(snapshot.downloadURL)
+                }, err => {
+                    reject(err);
+                })
+        })
+    })
+}
+
 const encodeImageUri = (imageUri, callback) => {
     let c = document.createElement('canvas');
     let ctx = c.getContext("2d");
@@ -64,6 +79,7 @@ export {
     auth,
     storage,
     uploadImage,
+    uploadAvatar,
     usersCollection,
     postsCollection,
     commentsCollection,
