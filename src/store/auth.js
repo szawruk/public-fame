@@ -38,8 +38,20 @@ export default {
         },
         async fetchUserProfile({commit}, user) {
             if (user) {
-                const userProfile = await fb.usersCollection.doc(user.uid).get()
-                commit('setUserProfile', userProfile.data())
+                let userProfile = await fb.usersCollection.doc(user.uid).get()
+
+
+                let userModel = userProfile.data()
+                try{
+                    userModel['avatar'] = await fb.storage.ref(`Users/${user.uid}.jpg`).getDownloadURL()
+                }
+                catch(err){
+                    console.log(err)
+                }
+
+
+
+                commit('setUserProfile', userModel)
             } else {
                 await router.push('login')
             }

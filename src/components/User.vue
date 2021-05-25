@@ -6,18 +6,27 @@
         <div class="user-info-container">
           <div class="left-side">
             <div class="avatar-wrapper">
-              <img :src="user.avatar" class="user-image"/>
+              <img v-if="loggedUser.avatar" :src="loggedUser.avatar" class="user-image" alt="avatar"/>
+              <img v-else src="../../resources/icon.png" class="user-image" alt="avatar"/>
             </div>
             <div class="followers-count">
-              {{user.followers}} followers
+              {{user.followerCount}} followers
             </div>
             <div class="action-button">
-              <ion-button  @click="editAccount()" v-if="user.userId === loggedUser.userId">
-                Edit
-              </ion-button>
-              <ion-button  @click="followUser()" v-if="user.userId !== loggedUser.userId">
-                Follow
-              </ion-button>
+              <template v-if="user.userId === loggedUser.userId">
+                <ion-button  @click="editAccount()">
+                  Edit
+                </ion-button>
+              </template>
+              <template v-else>
+                <ion-button @click="followUser()" v-if="!user.followed">
+                  Follow
+                </ion-button>
+                <ion-button v-else @click="followUser()">
+                  Unfollow
+                </ion-button>
+              </template>
+
             </div>
           </div>
           <div class="right-side">
@@ -80,7 +89,7 @@ export default {
       this.$router.push('/user/edit')
     },
     followUser(){
-
+      this.$store.dispatch('users/follow', this.$route.params.id)
     }
   },
   computed: {
@@ -91,7 +100,7 @@ export default {
       return this.$store.state.auth.userProfile
     },
     posts() {
-      return this.$store.state.posts.openedUserPosts
+      return this.$store.state.posts.posts
     }
   },
   mounted() {

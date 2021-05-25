@@ -47,7 +47,7 @@ export default {
   },
   computed: {
     posts() {
-      return this.$store.state.posts.dashboardPosts
+      return this.$store.state.posts.posts
     }
   },
   mounted() {

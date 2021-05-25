@@ -13,20 +13,20 @@ export default {
     },
     actions: {
         async loadOpenedUser({dispatch, commit}, userId) {
-            commit('setOpenedUser', null)
+            // commit('setOpenedUser', null)
 
             let user = await fb.usersCollection.where('userId', '==', userId).get()
             user = user.docs[0].data()
             user["followed"] = true;
             if(userId !== fb.auth.currentUser.uid){
-                let followed = fb.followsCollection.where('userFollowedId', '==', userId);
-                followed = await fb.followsCollection.where('userFollowingId', '==', fb.auth.currentUser.uid).get();
+                let followed = fb.followsCollection.where('followedUserId', '==', userId);
+                followed = await fb.followsCollection.where('followingUserId', '==', fb.auth.currentUser.uid).get();
     
                 if(followed.docs.length === 0)
                     user["followed"] = false;
             }
                       
-            user["followerCount"] = (await fb.followsCollection.where('userFollowedId', '==', userId).get()).docs.length;
+            user["followerCount"] = (await fb.followsCollection.where('followedUserId', '==', userId).get()).docs.length;
             commit('setOpenedUser', user)
         },
         async updateUser({dispatch, commit}, data) {
@@ -36,8 +36,8 @@ export default {
         },
         async follow({dispatch, commit}, userId) {
             
-            let followed = fb.followsCollection.where('userFollowedId', '==', userId);
-            followed = await fb.followsCollection.where('userFollwingId', '==', fb.auth.currentUser.uid).get();
+            let followed = fb.followsCollection.where('followedUserId', '==', userId);
+            followed = await fb.followsCollection.where('followingUserId', '==', fb.auth.currentUser.uid).get();
 
             let follow = true;
 
@@ -48,8 +48,8 @@ export default {
             // We are adding follower
             if(follow){
                 response = await fb.followsCollection.add({
-                    userFollowedId: userId,
-                    userFollowingId: fb.auth.currentUser.uid,
+                    followedUserId: userId,
+                    followingUserId: fb.auth.currentUser.uid,
                 });
             }
             // Unfollowing
@@ -57,6 +57,8 @@ export default {
                 await fb.followsCollection.doc(followed.docs[0].id).delete();
             }
             console.log(response);
+
+            dispatch('loadOpenedUser', userId)
         },
     }
 }

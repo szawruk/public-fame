@@ -78,7 +78,7 @@ export default {
       this.$imagePicker.getPictures(this.options).then((results) => {
         for (let i = 0; i < results.length; i++) {
           // imageResponse.push('data:image/jpeg;base64,' + results[i]);
-          this.$store.dispatch('photos/savePhoto', cap.convertFileSrc(results[i]))
+          this.$store.dispatch('photos/setAvatar', cap.convertFileSrc(results[i]))
         }
       }, (err) => {
         alert(err);

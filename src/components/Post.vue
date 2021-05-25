@@ -1,9 +1,10 @@
 <template>
   <div class="post" :class="hideShowCommentsButton ? '' : 'margin-bottom'">
     <div class="post-header" v-if="!hideUserHeader">
-      <img class="post-author-avatar" :src="post.authorAvatar" :alt="post.authorNick"/>
+      <img v-if="post.avatar" :src="post.avatar" class="post-author-avatar" alt="avatar"/>
+      <img v-else src="../../resources/icon.png" class="post-author-avatar" alt="avatar"/>
       <div class="post-author-name">
-        {{ post.authorNick }}
+        {{ post.nick }}
       </div>
     </div>
     <div class="post-image-wrapper">
@@ -35,7 +36,7 @@
     </div>
     <div class="description-wrapper">
       <p class="description">
-        <span>{{ post.authorNick }}</span> {{ post.description }} {{post.myReaction}}
+        <span>{{ post.nick }}</span> {{ post.description }}
       </p>
     </div>
     <div class="comments-wrapper" v-if="!hideShowCommentsButton">

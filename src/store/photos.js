@@ -1,4 +1,5 @@
 import * as fb from '../firebase'
+import router from "@/router";
 
 export default {
     namespaced: true,
@@ -12,8 +13,12 @@ export default {
         }
     },
     actions: {
-        async savePhoto({dispatch}, photo) {
+        // async savePhoto({dispatch}, photo) {
+        //     await fb.uploadAvatar(photo)
+        // },
+        async setAvatar({dispatch}, photo) {
             await fb.uploadAvatar(photo)
+            await router.push('/users/'+  fb.auth.currentUser.uid)
         },
 
     }

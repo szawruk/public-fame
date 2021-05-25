@@ -7,8 +7,8 @@
           Edit account
         </div>
         <div class="avatar-wrapper">
-          <img :src="loggedUser.avatar" class="user-avatar" v-if="loggedUser.avatar"/>
-          <div class="user-avatar-scam" v-if="!loggedUser.avatar">NO IMAGE</div>
+          <img v-if="loggedUser.avatar" :src="loggedUser.avatar" class="user-avatar" alt="avatar" @click="updateAvatar()"/>
+          <img v-else src="../../resources/icon.png" class="user-avatar" alt="avatar" @click="updateAvatar()"/>
         </div>
         <div class="description-container">
           <div class="description-wrapper">
@@ -44,6 +44,7 @@ import {
 import ActionsMenu from "@/components/ActionsMenu";
 import AppHeader from "@/components/AppHeader";
 import Post from "@/components/Post";
+import {Capacitor as cap} from "@capacitor/core/dist/esm/global";
 
 export default {
   name: 'EditAccount',
@@ -62,9 +63,40 @@ export default {
   methods: {
     saveChanges() {
       this.$store.dispatch('users/updateUser', {description: this.description})
-      this.$router.push('/dashboard')
+      this.$router.push('/users/'+ this.loggedUser.userId)
     },
+    updateAvatar() {
+      let options = {
+        // Android only. Max images to be selected, defaults to 15. If this is set to 1, upon
+        // selection of a single image, the plugin will return it.
+        maximumImagesCount: 1,
 
+        // max width and height to allow the images to be.  Will keep aspect
+        // ratio no matter what.  So if both are 800, the returned image
+        // will be at most 800 pixels wide and 800 pixels tall.  If the width is
+        // 800 and height 0 the image will be 800 pixels wide if the source
+        // is at least that wide.
+        width: 200,
+        //height: 200,
+
+        // quality of resized image, defaults to 100
+        quality: 25,
+
+        // output type, defaults to FILE_URIs.
+        // available options are
+        // window.imagePicker.OutputType.FILE_URI (0) or
+        // window.imagePicker.OutputType.BASE64_STRING (1)
+        outputType: 1
+      };
+      let imageResponse = [];
+      this.$imagePicker.getPictures(this.options).then((results) => {
+        for (let i = 0; i < results.length; i++) {
+          this.$store.dispatch('photos/setAvatar', cap.convertFileSrc(results[i]))
+        }
+      }, (err) => {
+        alert(err);
+      });
+    },
   },
   computed: {
     loggedUser() {

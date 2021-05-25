@@ -12,7 +12,7 @@ export default {
     },
     actions: {
         async loadComments({dispatch, commit, rootState}, postId) {
-            commit('setComments', [])
+            // commit('setComments', [])
             let comments = await fb.commentsCollection.where('postId', '==', postId).orderBy('createdOn').get()
 
             let tempComments = []

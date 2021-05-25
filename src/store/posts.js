@@ -1,11 +1,10 @@
 import * as fb from '../firebase'
-
+import router from "@/router";
 
 export default {
     namespaced: true,
     state: {
-        dashboardPosts: [],
-        openedUserPosts: [],
+        posts: [],
         openedPost: {}
     },
     mutations: {
@@ -13,15 +12,15 @@ export default {
             state.openedPost = val
         },
         setOpenedUserPosts(state, val) {
-            state.openedUserPosts = val
+            state.posts = val
         },
         setDashboardPosts(state, val) {
-            state.dashboardPosts = val
+            state.posts = val
         },
     },
     actions: {
         async loadOpenedPost({dispatch, commit}, postId) {
-            commit('setOpenedPost', null)
+            // commit('setOpenedPost', null)
 
             let post = await fb.postsCollection.where('postId', '==', postId).get()
             post = post.docs[0].data()
@@ -29,9 +28,13 @@ export default {
             let user = await fb.usersCollection.where('userId', '==', post.userId).get()
             user = user.docs[0].data()
 
-            post['authorNick'] = user.nick
-            post['authorAvatar'] = 'https://firebasestorage.googleapis.com/v0/b/publicfame-6e82f.appspot.com/o/avatar1.jpg?alt=media&token=e2af1daa-5165-40d6-8e86-09a707082561'
-            
+            try {
+                let url = await fb.storage.ref(`Users/${user.userId}.jpg`).getDownloadURL();
+                post['avatar'] = url;
+            } catch (err) {
+                console.log(err)
+            }
+
             let postReactions = await fb.reactionsCollection.where('postId', '==', postId).get();
             let likeCount = 0;
             let dislikeCount = 0;
@@ -39,17 +42,17 @@ export default {
             let shameCount = 0;
             postReactions.forEach(reaction => {
                 let reactionData = reaction.data()
-                if(reactionData.userId === fb.auth.currentUser.uid){
+                if (reactionData.userId === fb.auth.currentUser.uid) {
                     console.log("xd")
                     post['myReaction'] = reactionData.type;
                 }
-                if(reactionData.type === 'like')
+                if (reactionData.type === 'like')
                     likeCount++;
-                else if(reactionData.type === 'dislike')
+                else if (reactionData.type === 'dislike')
                     dislikeCount++
-                else if(reactionData.type === 'fame')
+                else if (reactionData.type === 'fame')
                     fameCount++
-                else if(reactionData.type === 'shame')
+                else if (reactionData.type === 'shame')
                     shameCount++
             });
 
@@ -57,7 +60,6 @@ export default {
             post['dislikeCount'] = dislikeCount;
             post['fameCount'] = fameCount;
             post['shameCount'] = shameCount;
-            console.log(post)
             commit('setOpenedPost', post)
         },
         async addComment({dispatch, commit, rootState}, data) {
@@ -71,7 +73,7 @@ export default {
             dispatch('loadComments', data.postId)
         },
         async loadDashboardPosts({commit}) {
-            commit('setDashboardPosts', [])
+            // commit('setDashboardPosts', [])
 
             let posts = await fb.postsCollection.limit(20).get()
 
@@ -86,19 +88,13 @@ export default {
                 }
             })
 
-            let tempUsers = {}
-            while (usersIds.length) {
-                const batch = usersIds.splice(0, 10);
-                const users = await fb.usersCollection.where('userId', 'in', batch).get()
-                users.forEach(user => {
-                    let userData = user.data()
-                    tempUsers[userData.userId] = userData
-                })
-            }
-
             for (let i = 0; i < tempPosts.length; i++) {
-                tempPosts[i]['authorNick'] = tempUsers[tempPosts[i].userId].nick;
-                tempPosts[i]['authorAvatar'] = tempUsers[tempPosts[i].userId].avatar;
+                try {
+                    let url = await fb.storage.ref(`Users/${tempPosts[i].userId}.jpg`).getDownloadURL();
+                    tempPosts[i]['avatar'] = url;
+                } catch (err) {
+                    console.log(err)
+                }
 
                 let postReactions = await fb.reactionsCollection.where('postId', '==', tempPosts[i].postId).get();
                 let likeCount = 0;
@@ -107,17 +103,17 @@ export default {
                 let shameCount = 0;
                 postReactions.forEach(reaction => {
                     let reactionData = reaction.data()
-                    if(reactionData.userId === fb.auth.currentUser.uid){
+                    if (reactionData.userId === fb.auth.currentUser.uid) {
                         tempPosts[i]['myReaction'] = reactionData.type;
                         console.log(tempPosts[i]['myReaction'])
                     }
-                    if(reactionData.type === 'like')
+                    if (reactionData.type === 'like')
                         likeCount++;
-                    else if(reactionData.type === 'dislike')
+                    else if (reactionData.type === 'dislike')
                         dislikeCount++
-                    else if(reactionData.type === 'fame')
+                    else if (reactionData.type === 'fame')
                         fameCount++
-                    else if(reactionData.type === 'shame')
+                    else if (reactionData.type === 'shame')
                         shameCount++
                 });
                 tempPosts[i]['likeCount'] = likeCount;
@@ -129,7 +125,7 @@ export default {
             commit('setDashboardPosts', tempPosts)
         },
         async loadOpenedUserPosts({commit}, userId) {
-            commit('setOpenedUserPosts', [])
+            // commit('setOpenedUserPosts', [])
 
             let posts = await fb.postsCollection.where('userId', '==', userId).get()
 
@@ -144,15 +140,43 @@ export default {
                 }
             })
 
-            let user = await fb.usersCollection.where('userId', '==', userId).get()
-            user = await user.docs[0].data()
+            for (let i = 0; i < tempPosts.length; i++) {
+                try {
+                    let url = await fb.storage.ref(`Users/${tempPosts[i].userId}.jpg`).getDownloadURL();
+                    tempPosts[i]['avatar'] = url;
+                } catch (err) {
+                    console.log(err)
+                }
 
-            tempPosts.forEach(comment => {
-                comment['authorNick'] = user.nick
-                comment['authorAvatar'] = user.avatar
-            })
+                let postReactions = await fb.reactionsCollection.where('postId', '==', tempPosts[i].postId).get();
+                let likeCount = 0;
+                let dislikeCount = 0;
+                let fameCount = 0;
+                let shameCount = 0;
+                postReactions.forEach(reaction => {
+                    let reactionData = reaction.data()
+                    if (reactionData.userId === fb.auth.currentUser.uid) {
+                        tempPosts[i]['myReaction'] = reactionData.type;
+                        console.log(tempPosts[i]['myReaction'])
+                    }
+                    if (reactionData.type === 'like')
+                        likeCount++;
+                    else if (reactionData.type === 'dislike')
+                        dislikeCount++
+                    else if (reactionData.type === 'fame')
+                        fameCount++
+                    else if (reactionData.type === 'shame')
+                        shameCount++
+                });
+                tempPosts[i]['likeCount'] = likeCount;
+                tempPosts[i]['dislikeCount'] = dislikeCount;
+                tempPosts[i]['fameCount'] = fameCount;
+                tempPosts[i]['shameCount'] = shameCount;
+            }
+
 
             commit('setOpenedUserPosts', tempPosts)
+
         },
         async addLike({dispatch, commit}, postId) {
             let postReactions = fb.reactionsCollection.where('postId', '==', postId);
@@ -165,10 +189,13 @@ export default {
                     type: 'like',
                     userId: fb.auth.currentUser.uid,
                 });
-            } else if(postReactions.docs[0].data().type !== 'fame' && postReactions.docs[0].data().type !== 'shame') {
+            } else if (postReactions.docs[0].data().type !== 'fame' && postReactions.docs[0].data().type !== 'shame') {
                 await fb.reactionsCollection.doc(postReactions.docs[0].id).delete();
             }
+
+
             console.log(response);
+            dispatch('updatePosts', postId)
         },
         async addDislike({dispatch, commit}, postId) {
             let postReactions = fb.reactionsCollection.where('postId', '==', postId);
@@ -181,63 +208,71 @@ export default {
                     type: 'dislike',
                     userId: fb.auth.currentUser.uid,
                 });
-            } else if(postReactions.docs[0].data().type !== 'fame' && postReactions.docs[0].data().type !== 'shame'){
+            } else if (postReactions.docs[0].data().type !== 'fame' && postReactions.docs[0].data().type !== 'shame') {
                 await fb.reactionsCollection.doc(postReactions.docs[0].id).delete();
             }
             console.log(response);
+            dispatch('updatePosts', postId)
         },
         async addFame({dispatch, commit, rootState}, postId) {
             let postReactions = fb.reactionsCollection.where('postId', '==', postId);
             postReactions = await postReactions.where('userId', '==', fb.auth.currentUser.uid).get();
             let response = null
 
-            if(postReactions.docs.length === 0){
-                if(rootState.auth.userProfile.fameCD.seconds < new Date().getTime() / 1000 )
-                {
+            if (postReactions.docs.length === 0) {
+                if (rootState.auth.userProfile.fameCD.seconds < new Date().getTime() / 1000) {
                     response = await fb.reactionsCollection.add({
                         postId: postId,
                         type: 'fame',
                         userId: fb.auth.currentUser.uid,
                     });
                     fb.usersCollection.doc(fb.auth.currentUser.uid).update({
-                        fameCD: new Date(new Date().setDate(new Date().getDate()+1))
+                        fameCD: new Date(new Date().setDate(new Date().getDate() + 1))
                     });
-                }
-                else{
+                } else {
                     console.log("Nie możesz używać Fame więcej niż raz na 24h")
                 }
-            }
-            else{
+            } else {
                 console.log("Już dodano reakcje");
             }
             console.log(response);
+            dispatch('updatePosts', postId)
+
         },
         async addShame({dispatch, commit, rootState}, postId) {
             let postReactions = fb.reactionsCollection.where('postId', '==', postId);
             postReactions = await postReactions.where('userId', '==', fb.auth.currentUser.uid).get();
             let response = null
 
-            if(postReactions.docs.length === 0){
-                if(rootState.auth.userProfile.shameCD.seconds < new Date().getTime() / 1000 )
-                {
+            if (postReactions.docs.length === 0) {
+                if (rootState.auth.userProfile.shameCD.seconds < new Date().getTime() / 1000) {
                     response = await fb.reactionsCollection.add({
                         postId: postId,
                         type: 'shame',
                         userId: fb.auth.currentUser.uid,
                     });
                     fb.usersCollection.doc(fb.auth.currentUser.uid).update({
-                        shameCD: new Date(new Date().setDate(new Date().getDate()+1))
+                        shameCD: new Date(new Date().setDate(new Date().getDate() + 1))
                     });
-                }
-                else{
+                } else {
                     console.log("Nie możesz używać Shame więcej niż raz na 24h")
                 }
-            }
-            else{
+            } else {
                 console.log("Już dodano reakcje");
             }
-            
+
             console.log(response);
+            dispatch('updatePosts', postId)
+        },
+        updatePosts({dispatch, commit, rootState}, postId) {
+           dispatch('loadOpenedPost', postId)
+            console.log(router.currentRoute.value)
+            if(router.currentRoute.value.name === 'dashboard'){
+                dispatch('loadDashboardPosts')
+            }
+            else if(router.currentRoute.value.name === 'user'){
+                dispatch('loadOpenedUserPosts', router.currentRoute.value.params.id)
+            }
         },
     }
 }
