@@ -146,11 +146,19 @@ export default {
 
       .reaction-thumbs-up {
         color: green;
+        transition: all 0.2s ease-in-out;
+      }
+      .reaction-thumbs-up:active {
+        box-shadow: 0 0 2em rgba(15, 221, 15, 0.5);
       }
 
       .reaction-thumbs-down {
         color: red;
         margin-left: 20px;
+        transition: all 0.2s ease-in-out;
+      }
+      .reaction-thumbs-down:active{
+        box-shadow: 0 0 2em rgba(255, 59, 59, 0.5);
       }
     }
 
@@ -163,16 +171,23 @@ export default {
       .reaction-fame {
         color: #ff48ce;
         margin-right: 20px;
-
+        transition: all 0.2s ease-in-out;
         img {
           height: 16px;
           width: 16px;
         }
       }
-
+      .reaction-fame:active {
+        box-shadow: 0 0 2em #ff60d5;
+      }
       .reaction-shame {
         color: #7878ff;
         padding-right: 10px;
+        transition: all 0.2s ease-in-out;
+      }
+      .reaction-shame:active {
+        color: #7878ff;
+        box-shadow: 0 0 2em #8282ffde;
       }
     }
   }
