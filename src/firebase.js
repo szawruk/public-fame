@@ -29,10 +29,41 @@ const commentsCollection = db.collection('comments')
 const reactionsCollection = db.collection('reactions')
 const followsCollection = db.collection('follows')
 
+const uploadImage = (imageURI) => {
+    return new Promise((resolve, reject) => {
+        let storageRef = firebase.storage().ref();
+        let imageRef = storageRef.child('image').child('imageName');
+        encodeImageUri(imageURI, function (image64) {
+            imageRef.putString(image64, 'data_url')
+                .then(snapshot => {
+                    resolve(snapshot.downloadURL)
+                }, err => {
+                    reject(err);
+                })
+        })
+    })
+}
+
+const encodeImageUri = (imageUri, callback) => {
+    let c = document.createElement('canvas');
+    let ctx = c.getContext("2d");
+    let img = new Image();
+    img.onload = function () {
+        let aux = this;
+        c.width = aux.width;
+        c.height = aux.height;
+        ctx.drawImage(img, 0, 0);
+        let dataURL = c.toDataURL("image/jpeg");
+        callback(dataURL);
+    };
+    img.src = imageUri;
+};
+
 export {
     db,
     auth,
     storage,
+    uploadImage,
     usersCollection,
     postsCollection,
     commentsCollection,

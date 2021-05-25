@@ -9,6 +9,7 @@
 <script>
 import {IonActionSheet} from '@ionic/vue';
 // import { ImagePicker } from '@ionic-native/image-picker';
+import { Capacitor as cap} from '@capacitor/core';
 
 export default {
   name: 'ActionsMenu',
@@ -46,15 +47,15 @@ export default {
       ]
     }
   },
-  methods:{
-    closeMenu(){
+  methods: {
+    closeMenu() {
       this.$store.commit('main/setActionsMenuOpened', false)
     },
-    newPost(){
-      this.options = {
+    newPost() {
+      let options = {
         // Android only. Max images to be selected, defaults to 15. If this is set to 1, upon
         // selection of a single image, the plugin will return it.
-        //maximumImagesCount: 3,
+        maximumImagesCount: 1,
 
         // max width and height to allow the images to be.  Will keep aspect
         // ratio no matter what.  So if both are 800, the returned image
@@ -73,22 +74,23 @@ export default {
         // window.imagePicker.OutputType.BASE64_STRING (1)
         outputType: 1
       };
-      this.imageResponse = [];
+      let imageResponse = [];
       this.$imagePicker.getPictures(this.options).then((results) => {
-        for (var i = 0; i < results.length; i++) {
-          this.imageResponse.push('data:image/jpeg;base64,' + results[i]);
+        for (let i = 0; i < results.length; i++) {
+          // imageResponse.push('data:image/jpeg;base64,' + results[i]);
+          this.$store.dispatch('photos/savePhoto', cap.convertFileSrc(results[i]))
         }
       }, (err) => {
         alert(err);
       });
-      }
+    },
   },
-  computed:{
-    actionsMenuOpened:{
-      get: function(){
+  computed: {
+    actionsMenuOpened: {
+      get: function () {
         return this.$store.state.main.actionsMenuOpened
       },
-      set: function(value){
+      set: function (value) {
         this.$store.commit('main/setActionsMenuOpened', value)
       }
     },

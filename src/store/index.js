@@ -4,6 +4,7 @@ import auth from '@/store/auth'
 import comments from "@/store/comments";
 import posts from "@/store/posts";
 import users from "@/store/users";
+import photos from "@/store/photos";
 
 export default createStore({
   state: {
@@ -18,6 +19,7 @@ export default createStore({
     auth,
     comments,
     posts,
-    users
+    users,
+    photos
   }
 })
