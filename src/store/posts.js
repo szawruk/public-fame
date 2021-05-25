@@ -91,10 +91,31 @@ export default {
                 })
             }
 
-            tempPosts.forEach(comment => {
-                comment['authorNick'] = tempUsers[comment.userId].nick
-                comment['authorAvatar'] = tempUsers[comment.userId].avatar
-            })
+            for (let i = 0; i < tempPosts.length; i++) {
+                tempPosts[i]['authorNick'] = tempUsers[tempPosts[i].userId].nick;
+                tempPosts[i]['authorAvatar'] = tempUsers[tempPosts[i].userId].avatar;
+
+                let postReactions = await fb.reactionsCollection.where('postId', '==', tempPosts[i].postId).get();
+                let likeCount = 0;
+                let dislikeCount = 0;
+                let fameCount = 0;
+                let shameCount = 0;
+                postReactions.forEach(reaction => {
+                    let reactionData = reaction.data()
+                    if(reactionData.type === 'like')
+                        likeCount++;
+                    else if(reactionData.type === 'dislike')
+                        dislikeCount++
+                    else if(reactionData.type === 'fame')
+                        fameCount++
+                    else if(reactionData.type === 'shame')
+                        shameCount++
+                });
+                tempPosts[i]['likeCount'] = likeCount;
+                tempPosts[i]['dislikeCount'] = dislikeCount;
+                tempPosts[i]['fameCount'] = fameCount;
+                tempPosts[i]['shameCount'] = shameCount;
+            }
 
             commit('setDashboardPosts', tempPosts)
         },
@@ -135,8 +156,8 @@ export default {
                     type: 'like',
                     userId: fb.auth.currentUser.uid,
                 });
-            } else {
-                console.log("Już dodano reakcje");
+            } else if(postReactions.docs[0].data().type !== 'fame' && postReactions.docs[0].data().type !== 'shame') {
+                await fb.reactionsCollection.doc(postReactions.docs[0].id).delete();
             }
             console.log(response);
         },
@@ -151,8 +172,8 @@ export default {
                     type: 'dislike',
                     userId: fb.auth.currentUser.uid,
                 });
-            } else {
-                console.log("Już dodano reakcje");
+            } else if(postReactions.docs[0].data().type !== 'fame' && postReactions.docs[0].data().type !== 'shame'){
+                await fb.reactionsCollection.doc(postReactions.docs[0].id).delete();
             }
             console.log(response);
         },
