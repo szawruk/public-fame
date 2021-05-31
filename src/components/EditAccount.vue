@@ -13,7 +13,7 @@
         <div class="description-container">
           <div class="description-wrapper">
             <ion-textarea  class="textbox" :value="description" type="text" placeholder="Enter description..."
-                          @change="description= $event.target.value" autoGrow></ion-textarea>
+                          @change="description= $event.target.value" rows="15"></ion-textarea>
           </div>
         </div>
         <div class="action-button">
@@ -61,9 +61,8 @@ export default {
     IonButtons, IonBackButton, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, Post, IonActionSheet, AppHeader, IonTextarea
   },
   methods: {
-    saveChanges() {
-      this.$store.dispatch('users/updateUser', {description: this.description})
-      this.$router.push('/users/'+ this.loggedUser.userId)
+    async saveChanges() {
+      await this.$store.dispatch('users/updateUser', {description: this.description})
     },
     updateAvatar() {
       let options = {
@@ -105,7 +104,12 @@ export default {
   },
   mounted() {
       this.description = this.loggedUser.description
-  }
+  },
+  watch: {
+    $route() {
+      this.description = this.loggedUser.description
+    }
+  },
 }
 </script>
 
@@ -166,6 +170,7 @@ export default {
 
       .textbox{
         height: 100%;
+        min-height: 300px;
       }
     }
   }

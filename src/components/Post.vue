@@ -1,11 +1,11 @@
 <template>
   <div class="post" :class="hideShowCommentsButton ? '' : 'margin-bottom'">
-    <div class="post-header" v-if="!hideUserHeader">
-      <img v-if="post.avatar" :src="post.avatar" class="post-author-avatar" alt="avatar"/>
-      <img v-else src="../../resources/icon.png" class="post-author-avatar" alt="avatar"/>
-      <div class="post-author-name">
-        {{ post.nick }}
-      </div>
+    <div class="post-header" v-if="!hideUserHeader" @click="openUser()">
+        <img v-if="post.avatar" :src="post.avatar" class="post-author-avatar" alt="avatar"/>
+        <img v-else src="../../resources/icon.png" class="post-author-avatar" alt="avatar"/>
+        <div class="post-author-name">
+          {{ post.nick }}
+        </div>
     </div>
     <div class="post-image-wrapper">
       <img :src="post.postImage" class="post-image"/>
@@ -72,6 +72,9 @@ export default {
     addShame(postId){
       this.$store.dispatch('posts/addShame', postId)
     },
+    openUser(){
+      this.$router.push('/user/' + this.post.userId)
+    }
 
   }
 }
@@ -97,6 +100,7 @@ export default {
     background-color: rgb(47, 47, 47);
     color: #e000a6;
     font-weight: bold;
+    cursor: pointer;
 
     .post-author-avatar {
       height: 25px;

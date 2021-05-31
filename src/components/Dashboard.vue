@@ -52,7 +52,15 @@ export default {
   },
   mounted() {
     this.$store.dispatch('posts/loadDashboardPosts')
-  }
+  },
+  watch: {
+    $route() {
+      if (this.$route.fullPath === "/dashboard"){
+        this.$store.commit('posts/setDashboardPosts', [])
+        this.$store.dispatch('posts/loadDashboardPosts')
+      }
+    }
+  },
 }
 </script>
 

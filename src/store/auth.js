@@ -40,7 +40,6 @@ export default {
             if (user) {
                 let userProfile = await fb.usersCollection.doc(user.uid).get()
 
-
                 let userModel = userProfile.data()
                 try{
                     userModel['avatar'] = await fb.storage.ref(`Users/${user.uid}.jpg`).getDownloadURL()
@@ -48,8 +47,6 @@ export default {
                 catch(err){
                     console.log(err)
                 }
-
-
 
                 commit('setUserProfile', userModel)
             } else {

@@ -73,8 +73,6 @@ export default {
             dispatch('loadComments', data.postId)
         },
         async loadDashboardPosts({commit}) {
-            // commit('setDashboardPosts', [])
-
             let posts = await fb.postsCollection.limit(20).get()
 
             let tempPosts = []
@@ -105,7 +103,6 @@ export default {
                     let reactionData = reaction.data()
                     if (reactionData.userId === fb.auth.currentUser.uid) {
                         tempPosts[i]['myReaction'] = reactionData.type;
-                        console.log(tempPosts[i]['myReaction'])
                     }
                     if (reactionData.type === 'like')
                         likeCount++;
@@ -125,8 +122,6 @@ export default {
             commit('setDashboardPosts', tempPosts)
         },
         async loadOpenedUserPosts({commit}, userId) {
-            // commit('setOpenedUserPosts', [])
-
             let posts = await fb.postsCollection.where('userId', '==', userId).get()
 
             let tempPosts = []

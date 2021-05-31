@@ -18,7 +18,8 @@ export default {
         // },
         async setAvatar({dispatch}, photo) {
             await fb.uploadAvatar(photo)
-            await router.push('/users/'+  fb.auth.currentUser.uid)
+            await dispatch('auth/fetchUserProfile', fb.auth.currentUser, {root:true})
+            await router.push('/user/'+  fb.auth.currentUser.uid)
         },
 
     }

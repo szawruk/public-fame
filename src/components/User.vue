@@ -6,7 +6,7 @@
         <div class="user-info-container">
           <div class="left-side">
             <div class="avatar-wrapper">
-              <img v-if="loggedUser.avatar" :src="loggedUser.avatar" class="user-image" alt="avatar"/>
+              <img v-if="user.avatar" :src="user.avatar" class="user-image" alt="avatar"/>
               <img v-else src="../../resources/icon.png" class="user-image" alt="avatar"/>
             </div>
             <div class="followers-count">
@@ -104,9 +104,19 @@ export default {
     }
   },
   mounted() {
+    this.$store.commit('users/setOpenedUser', null)
     this.$store.dispatch('users/loadOpenedUser', this.$route.params.id)
     this.$store.dispatch('posts/loadOpenedUserPosts', this.$route.params.id)
-  }
+  },
+  watch: {
+    $route() {
+      if (this.$route.name === "user"){
+        this.$store.commit('users/setOpenedUser', null)
+        this.$store.dispatch('users/loadOpenedUser', this.$route.params.id)
+        this.$store.dispatch('posts/loadOpenedUserPosts', this.$route.params.id)
+      }
+    }
+  },
 }
 </script>
 
@@ -129,6 +139,7 @@ export default {
         img {
           border-radius: 50%;
           height: 100px;
+          width: 100px;
           object-fit: cover;
           object-position: center;
         }
