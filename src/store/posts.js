@@ -186,8 +186,14 @@ export default {
                 });
             } else if (postReactions.docs[0].data().type !== 'fame' && postReactions.docs[0].data().type !== 'shame') {
                 await fb.reactionsCollection.doc(postReactions.docs[0].id).delete();
-            }
-
+                if(postReactions.docs[0].data().type === 'dislike'){
+                    response = await fb.reactionsCollection.add({
+                        postId: postId,
+                        type: 'like',
+                        userId: fb.auth.currentUser.uid,
+                    });
+                }   
+            }   
 
             console.log(response);
             dispatch('updatePosts', postId)
@@ -205,6 +211,13 @@ export default {
                 });
             } else if (postReactions.docs[0].data().type !== 'fame' && postReactions.docs[0].data().type !== 'shame') {
                 await fb.reactionsCollection.doc(postReactions.docs[0].id).delete();
+                if(postReactions.docs[0].data().type === 'like'){
+                    response = await fb.reactionsCollection.add({
+                        postId: postId,
+                        type: 'dislike',
+                        userId: fb.auth.currentUser.uid,
+                    });
+                }
             }
             console.log(response);
             dispatch('updatePosts', postId)
